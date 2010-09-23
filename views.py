@@ -164,7 +164,7 @@ class DAVHandler(webapp.RequestHandler):
             template_values = {
                 'path': path,
                 'prefix': self._prefix,
-                'resources': resource.children
+                'resources': [child for child in resource.children if not child.display_name.startswith('.')]
             }
 
             template_path = os.path.join(os.path.dirname(__file__), 'templates/collection.html')
