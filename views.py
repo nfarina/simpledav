@@ -127,6 +127,12 @@ class DAVHandler(webapp.RequestHandler):
         path = self._relpath
         parent_path = os.path.dirname(path)
 
+        # anything at this path already?
+        existing_resource = Resource.get_by_path(path)
+        
+        if existing_resource:
+            existing_resource.delete_recursive()
+
         # fetch parent
         if parent_path:
             parent = Resource.get_by_path(parent_path)
