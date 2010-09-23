@@ -14,7 +14,7 @@ class DAVHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         super(DAVHandler, self).initialize(request,response)
         
-        self._relpath = self.url_to_path(self.request.path)
+        self.request_path = self.url_to_path(self.request.path)
 
     def url_to_path(self,path):
         """Accepts a relative url string and converts it to our internal relative path (minux prefix) used in our Resource entities."""
@@ -27,7 +27,7 @@ class DAVHandler(webapp.RequestHandler):
         self.response.headers['Content-Type'] = 'httpd/unix-directory'
     
     def propfind(self):
-        path = self._relpath
+        path = self.request_path
         depth = self.request.headers.get('depth','0')
         
         if depth != '0' and depth != '1':
@@ -52,7 +52,7 @@ class DAVHandler(webapp.RequestHandler):
     
     def mkcol(self):
         """Creates a subdirectory, given an absolute path."""
-        path = self._relpath
+        path = self.request_path
         parent_path = os.path.dirname(path)
         
         # check for duplicate
@@ -75,7 +75,7 @@ class DAVHandler(webapp.RequestHandler):
     
     def delete(self):
         """Deletes a resource at a url. If it's a collection, it must be empty."""
-        path = self._relpath
+        path = self.request_path
         resource = Resource.get_by_path(path)
 
         if not resource:
@@ -85,7 +85,7 @@ class DAVHandler(webapp.RequestHandler):
     
     def move(self):
         """Moves a resource from one path to another."""
-        path = self._relpath
+        path = self.request_path
         resource = Resource.get_by_path(path)
         
         if not resource:
@@ -124,7 +124,7 @@ class DAVHandler(webapp.RequestHandler):
     
     def put(self):
         """Uploads a file."""
-        path = self._relpath
+        path = self.request_path
         parent_path = os.path.dirname(path)
 
         # anything at this path already?
@@ -151,9 +151,24 @@ class DAVHandler(webapp.RequestHandler):
 
         self.response.set_status(201,'Created')
     
+    # HEAD is implemented but commented out until Google stops overwriting our custom Content-Length header with zero.
+    # http://code.google.com/p/googleappengine/issues/detail?id=2719&q=HEAD&colspec=ID%20Type%20Status%20Priority%20Stars%20Owner%20Summary%20Log%20Component
+    
+#    def head(self):
+#        """Gets information about a resource sans the data itself."""
+#        path = self.request_path
+#        
+#        resource = Resource.get_by_path(path)
+#        
+#        if not resource:
+#            return self.response.set_status(404,"Not Found")
+#
+#        self.response.headers['Content-Type'] = resource.content_type_or_default
+#        self.response.headers['Content-Length'] = resource.content_length
+        
     def get(self):
         """Downloads a file."""
-        path = self._relpath
+        path = self.request_path
         
         resource = Resource.get_by_path(path)
         
