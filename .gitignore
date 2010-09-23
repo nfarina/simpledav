@@ -1,0 +1,8 @@
+# Ignore this so you can make your own from the sample file
+app.yaml
+
+# Python
+*.pyc
+
+# Mac
+.DS_Store

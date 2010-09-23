@@ -1,0 +1,13 @@
+<html>
+<head>
+    <title>{{ path|default:"Top Level" }}</title>    
+</head>
+<h2>
+    {{ path|default:"Top Level" }}
+</h2>
+<ul>
+{% for resource in resources %}
+    <li><a href="{{ prefix }}{{ resource.path }}">{{ resource.display_name }}</a></li>
+{% endfor %}
+</ul>
+</html>

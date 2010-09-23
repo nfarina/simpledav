@@ -1,0 +1,27 @@
+*** original/dev_appserver.py	2010-08-16 12:28:38.000000000 -0500
+--- dev_appserver.py	2010-08-16 13:49:27.000000000 -0500
+***************
+*** 3109,3114 ****
+--- 3109,3130 ----
+      def do_TRACE(self):
+        """Handles TRACE requests."""
+        self._HandleRequest()
++       
++     def handle_one_request(self):
++         """Handle a single HTTP request.
++ 
++         You normally don't need to override this method; see the class
++         __doc__ string for information on how to handle specific HTTP
++         commands such as GET and POST.
++ 
++         """
++         self.raw_requestline = self.rfile.readline()
++         if not self.raw_requestline:
++             self.close_connection = 1
++             return
++         if not self.parse_request(): # An error code has been sent, just exit
++             return
++         self._HandleRequest()
+  
+      def _Dispatch(self, dispatcher, socket_infile, outfile, env_dict):
+        """Copy request data from socket and dispatch.
