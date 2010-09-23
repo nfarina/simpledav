@@ -151,20 +151,9 @@ class DAVHandler(webapp.RequestHandler):
 
         self.response.set_status(201,'Created')
     
-    # HEAD is implemented but commented out until Google stops overwriting our custom Content-Length header with zero.
-    # http://code.google.com/p/googleappengine/issues/detail?id=2719&q=HEAD&colspec=ID%20Type%20Status%20Priority%20Stars%20Owner%20Summary%20Log%20Component
-    
-#    def head(self):
-#        """Gets information about a resource sans the data itself."""
-#        path = self.request_path
-#        
-#        resource = Resource.get_by_path(path)
-#        
-#        if not resource:
-#            return self.response.set_status(404,"Not Found")
-#
-#        self.response.headers['Content-Type'] = resource.content_type_or_default
-#        self.response.headers['Content-Length'] = resource.content_length
+    def head(self):
+        """Gets information about a resource sans the data itself."""
+        self.get() # app engine will chop off the body for us, this is the only way to make Google send a Content-Length header without the actual body being that length.
         
     def get(self):
         """Downloads a file."""

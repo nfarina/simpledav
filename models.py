@@ -2,6 +2,7 @@ from google.appengine.ext import db
 from xml.etree import ElementTree as ET
 import os
 import mimetypes
+from urllib import pathname2url
 
 class ResourceData(db.Model):
     blob = db.BlobProperty()
@@ -44,6 +45,10 @@ class Resource(db.Model):
     @property
     def display_name(self):
         return os.path.basename(self.path)
+    
+    @property
+    def path_as_url(self):
+        return pathname2url(self.path)
     
     @property
     def content_type_or_default(self):
