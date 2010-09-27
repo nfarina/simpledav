@@ -8,6 +8,9 @@ class ResourceData(db.Model):
     blob = db.BlobProperty()
 
 class Resource(db.Model):
+    """Implements a heirarchical model for storage of resources mimicking a filesystem: 'directories' which are is_collection=true, and 'files'
+       which are everything else. We use an explicit parent_resource property so we can query direct children of a resource, akin to listing
+       the contents of a directory in a filesystem."""
     path = db.StringProperty() # full path, not just the name, no trailing slash
     parent_resource = db.SelfReferenceProperty(collection_name="children")
     is_collection = db.BooleanProperty()
