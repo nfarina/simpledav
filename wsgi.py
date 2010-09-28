@@ -15,7 +15,8 @@ class WSGIApplication(object):
         """
         self._debug = debug
         self._admin_password = admin_password
-        self._handler = DAVHandler(prefix)
+        self._handler = DAVHandler()
+        self._handler.set_prefix(prefix)
 
     def __call__(self, environ, start_response):
         """Called by WSGI when a request comes in."""
@@ -31,6 +32,9 @@ class WSGIApplication(object):
 
         response.wsgi_write(start_response)
         return ['']
+
+    def set_prefix(self, prefix):
+        self._handler.set_prefix(prefix)
     
     def get_credentials(self, request):
         """Extracts and returns the tuple (username,password) from the given request's HTTP Basic 'Authentication' header."""

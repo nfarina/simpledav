@@ -8,13 +8,13 @@ import logging
 import os
 
 class DAVHandler(webapp.RequestHandler):
-    def __init__(self, prefix=None):
-        self._prefix = '/%s/' % prefix.strip('/') if prefix else '/' # normalize
-    
     def initialize(self,request,response):
         super(DAVHandler, self).initialize(request,response)
         
         self.request_path = self.url_to_path(self.request.path)
+
+    def set_prefix(self,prefix):
+        self._prefix = '/%s/' % prefix.strip('/') if prefix else '/' # normalize
 
     def url_to_path(self,path):
         """Accepts a relative url string and converts it to our internal relative path (minux prefix) used in our Resource entities."""
