@@ -13,7 +13,7 @@ class Resource(db.Model):
        the contents of a directory in a filesystem."""
     path = db.StringProperty() # full path, not just the name, no trailing slash
     parent_resource = db.SelfReferenceProperty(collection_name="children")
-    is_collection = db.BooleanProperty()
+    is_collection = db.BooleanProperty(default=False)
     created = db.DateTimeProperty(auto_now_add=True)
     modified = db.DateTimeProperty(auto_now=True)
     content_language = db.StringProperty()
