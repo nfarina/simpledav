@@ -90,23 +90,29 @@ class Resource(db.Model):
     def export_response(self,href=None):
         datetime_format = '%Y-%m-%dT%H:%M:%SZ'
         
-        response = ET.Element('response')
-        ET.SubElement(response, 'href').text = href
-        propstat = ET.SubElement(response,'propstat')
-        prop = ET.SubElement(propstat,'prop')
+        response = ET.Element('D:response',{'xmlns:D':'DAV:'})
+        ET.SubElement(response, 'D:href').text = href
+        propstat = ET.SubElement(response,'D:propstat')
+        prop = ET.SubElement(propstat,'D:prop')
         
-        ET.SubElement(prop, 'creationdate').text = self.created.strftime(datetime_format)
-        ET.SubElement(prop, 'displayname').text = self.display_name
-        ET.SubElement(prop, 'getcontentlanguage').text = str(self.content_language)
-        ET.SubElement(prop, 'getcontentlength').text = str(self.content_length)
-        ET.SubElement(prop, 'getcontenttype').text = str(self.content_type_or_default)
+        if self.created:
+            ET.SubElement(prop, 'D:creationdate').text = self.created.strftime(datetime_format)
+        
+        ET.SubElement(prop, 'D:displayname').text = self.display_name
+        
+        if self.content_language:
+            ET.SubElement(prop, 'D:getcontentlanguage').text = str(self.content_language)
+        
+        ET.SubElement(prop, 'D:getcontentlength').text = str(self.content_length)
+        ET.SubElement(prop, 'D:getcontenttype').text = str(self.content_type_or_default)
+        
+        if self.modified:
+            ET.SubElement(prop, 'D:getlastmodified').text = self.modified.strftime(datetime_format)
 
-        ET.SubElement(prop, 'getlastmodified').text = self.modified.strftime(datetime_format)
-
-        resourcetype = ET.SubElement(prop,'resourcetype')
+        resourcetype = ET.SubElement(prop,'D:resourcetype')
         
         if self.is_collection:
-            ET.SubElement(resourcetype, 'collection')
+            ET.SubElement(resourcetype, 'D:collection')
 
-        ET.SubElement(propstat,'status').text = "HTTP/1.1 200 OK"
+        ET.SubElement(propstat,'D:status').text = "HTTP/1.1 200 OK"
         return response

@@ -7,7 +7,7 @@ import sys
 import traceback
 
 class WSGIApplication(object):
-    def __init__(self, prefix=None, admin_password=None, debug=False):
+    def __init__(self, prefix=None, admin_password=None, debug=False, handler_cls=DAVHandler):
         """Initializes this application with the given URL mapping.
 
         Args:
@@ -15,7 +15,7 @@ class WSGIApplication(object):
         """
         self._debug = debug
         self._admin_password = admin_password
-        self._handler = DAVHandler()
+        self._handler = handler_cls()
         self._handler.set_prefix(prefix)
 
     def __call__(self, environ, start_response):
