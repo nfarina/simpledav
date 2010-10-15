@@ -1,8 +1,8 @@
 *** original/dev_appserver.py	2010-08-16 12:28:38.000000000 -0500
 --- dev_appserver.py	2010-08-16 13:49:27.000000000 -0500
 ***************
-*** 3109,3114 ****
---- 3109,3130 ----
+*** 3121,3126 ****
+--- 3121,3142 ----
       def do_TRACE(self):
         """Handles TRACE requests."""
         self._HandleRequest()
