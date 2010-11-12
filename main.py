@@ -1,7 +1,7 @@
 from google.appengine.ext.webapp.util import run_wsgi_app
 import wsgi
 
-application = wsgi.WSGIApplication(admin_password='foobar',debug=True)
+application = wsgi.SimpledavApplication(admin_password='foobar',debug=True)
 
 def main():
     run_wsgi_app(application)

@@ -6,7 +6,7 @@ import logging
 import sys
 import traceback
 
-class WSGIApplication(object):
+class SimpledavApplication(object):
     def __init__(self, prefix=None, admin_password=None, debug=False, handler_cls=DAVHandler):
         """Initializes this application with the given URL mapping.
 

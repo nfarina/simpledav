@@ -28,12 +28,13 @@ class DAVHandler(webapp.RequestHandler):
     
     def propfind(self):
         path = self.request_path
+        self.propfind_resource(Resource.get_by_path(path))
+    
+    def propfind_resource(self, resource, children=None):
         depth = self.request.headers.get('depth','0')
         
         if depth != '0' and depth != '1':
             return self.response.set_status(403,'Forbidden')
-        
-        resource = Resource.get_by_path(path)
         
         if not resource:
             return self.response.set_status(404,"Not Found")
@@ -42,7 +43,10 @@ class DAVHandler(webapp.RequestHandler):
         root.append(resource.export_response(href=self.request.path)) # first response's href contains exactly what you asked for (relative path)
         
         if resource.is_collection and depth == '1':
-            for child in resource.children:
+            if children is None: # you can give us children if you don't want us to ask the resource
+                children = resource.children
+                
+            for child in children:
                 abs_path = pathname2url(self._prefix + child.path)
                 root.append(child.export_response(href=abs_path))
 
