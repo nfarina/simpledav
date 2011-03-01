@@ -3,6 +3,7 @@ from xml.etree import ElementTree as ET
 import os
 import mimetypes
 from urllib import pathname2url
+import logging
 
 class ResourceData(db.Model):
     blob = db.BlobProperty()
@@ -44,6 +45,15 @@ class Resource(db.Model):
     @classmethod
     def get_by_path(cls,path):
         return Resource.all().filter('path', path).get() if path else Resource.root()
+    
+    def put(self):
+        # workaround for general non-solveable issue of no UNIQUE constraint concept in app engine datastore.
+        # anytime we save, we look for the possibility of other duplicate Resources with the same path and delete them. 
+        for duped_resource in Resource.all().filter('path',self.path):
+            if not self.has_key() or self.key().id() != duped_resource.key().id():
+                logging.info("Deleting duplicate resource %s with path %s." % (duped_resource,duped_resource.path))
+                duped_resource.delete()
+        super(Resource,self).put()
     
     @property
     def display_name(self):
