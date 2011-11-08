@@ -11,7 +11,7 @@ class DAVHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         super(DAVHandler, self).initialize(request,response)
         
-        self.request_path = self.url_to_path(self.request.path)
+        self.request_path = self.url_to_path(self.request.path) if request else ""
 
     def set_prefix(self,prefix):
         self._prefix = '/%s/' % prefix.strip('/') if prefix else '/' # normalize
